@@ -12,9 +12,20 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  DateTime dateTime = DateTime.now();
+  var date;
+  var day;
+  @override
+  void initState() {
+    setState(() {
+      date = DateFormat('hh:mm a').format(DateTime.now()).toString();
+      day = DateFormat.yMMMMd().format(DateTime.now()).toString();
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    DateTime dateTime = DateTime.now();
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -36,12 +47,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: CLock()),
           ),
           Text(
-            DateFormat('hh:mm a').format(DateTime.now()).toString(),
+            date,
             style: GoogleFonts.nunitoSans(
                 color: Colors.white, fontWeight: FontWeight.bold, fontSize: 25),
           ),
           Text(
-            DateFormat.yMMMd().format(dateTime).toString(),
+            day,
             style: GoogleFonts.nunitoSans(
                 color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 15),
           ),

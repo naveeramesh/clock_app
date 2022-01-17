@@ -24,8 +24,8 @@ class _CLockState extends State<CLock> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 200,
-      width: 200,
+      height: 220,
+      width: 220,
       child: Transform.rotate(
           angle: -pi / 2,
           child: CustomPaint(

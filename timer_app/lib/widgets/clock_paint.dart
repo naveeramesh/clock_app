@@ -15,6 +15,7 @@ class ClockPainter extends CustomPainter {
     canvas.drawCircle(center, radius, circle_paint);
 //seconds line
     final sec_line = Paint()
+
       // ignore: prefer_const_constructors
       ..shader = RadialGradient(
         colors: const [Colors.pink, Colors.purple],

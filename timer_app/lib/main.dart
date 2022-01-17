@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 
 import 'Screen/homeScreen.dart';
@@ -44,11 +45,34 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      body: Center(
-        child: SizedBox(
-            height: 200,
-            child: Lottie.network(
-                "https://assets5.lottiefiles.com/packages/lf20_yyqxnhaq.json")),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Spacer(),
+          Center(
+            child: Container(
+                height: 200,
+                child: Lottie.network(
+                    "https://assets5.lottiefiles.com/packages/lf20_qgb9xga3.json")),
+          ),
+          Text(
+            "Ready | Set Go",
+            style: GoogleFonts.nunitoSans(
+                color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          Spacer(),
+          Text(
+            "Set your timer to reach your goal",
+            style: GoogleFonts.nunitoSans(color: Colors.grey, fontSize: 18),
+          ),
+          Text(
+            "Get start quickly",
+            style: GoogleFonts.nunitoSans(color: Colors.grey, fontSize: 18),
+          ),
+          SizedBox(
+            height: 20,
+          ),
+        ],
       ),
     );
   }

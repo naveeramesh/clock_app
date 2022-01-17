@@ -32,6 +32,11 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.blue,
+        onPressed: () {},
+        child: Icon(Icons.add),
+      ),
       appBar: AppBar(
         elevation: 0,
         centerTitle: true,
@@ -79,19 +84,15 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Row_Container(Icon icon, String text, Color iconcolor) {
-    Service service = Provider.of<Service>(context);
     return Padding(
       padding: const EdgeInsets.only(left: 8.0),
       child: GestureDetector(
-        onTap: () {
-          print(service.color);
-          text == "Alarm" ? service.color = Colors.red : null;
-        },
         child: Container(
           height: 50,
-          width: 115,
+          width: 100,
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10), color: service.color),
+              borderRadius: BorderRadius.circular(10),
+              color: text == "Alarm" ? Colors.grey[900]! : Colors.transparent),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

@@ -1,7 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:timer_app/Screen/clock.dart';
+import 'package:timer_app/providers/service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -12,14 +16,16 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   DateTime dateTime = DateTime.now();
-  var date;
-  var day;
+  var date = DateFormat('hh:mm a').format(DateTime.now()).toString();
+  var day = DateFormat.yMMMd().format(DateTime.now()).toString();
   @override
   void initState() {
-    setState(() {
-      date = DateFormat('hh:mm a').format(DateTime.now()).toString();
-      day = DateFormat.yMMMMd().format(DateTime.now()).toString();
+    Timer.periodic(Duration(minutes: 1), (timer) {
+      setState(() {
+        date = DateFormat('hh:mm a').format(DateTime.now()).toString();
+      });
     });
+
     super.initState();
   }
 
@@ -40,86 +46,13 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.only(top: 30.0, left: 20, right: 20),
+            padding: const EdgeInsets.only(top: 30.0, left: 10, right: 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Container(
-                  height: 50,
-                  width: 100,
-                  decoration: BoxDecoration(
-                      color: Colors.white12,
-                      borderRadius: BorderRadius.circular(10)),
-                  child: Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Icon(
-                          Icons.alarm,
-                          color: Colors.amber,
-                        ),
-                      ),
-                      Text(
-                        "Alarm",
-                        style: GoogleFonts.nunitoSans(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                Container(
-                  height: 50,
-                  width: 100,
-                  decoration: BoxDecoration(
-                      color: Colors.white12,
-                      borderRadius: BorderRadius.circular(10)),
-                  child: Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Icon(
-                          Icons.timelapse,
-                          color: Colors.blue,
-                        ),
-                      ),
-                      Text(
-                        "Timer",
-                        style: GoogleFonts.nunitoSans(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                Container(
-                  constraints: BoxConstraints(minWidth: 70),
-                  height: 50,
-                  width: 120,
-                  decoration: BoxDecoration(
-                      color: Colors.white12,
-                      borderRadius: BorderRadius.circular(10)),
-                  child: Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Icon(
-                          Icons.lock_clock,
-                          color: Colors.red,
-                        ),
-                      ),
-                      Text(
-                        "StopWatch",
-                        style: GoogleFonts.nunitoSans(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      )
-                    ],
-                  ),
-                ),
+                Row_Container(Icon(Icons.alarm), "Alarm", Colors.amber),
+                Row_Container(Icon(Icons.timelapse), "Timer", Colors.blue),
+                Row_Container(Icon(Icons.lock_clock), "Watch", Colors.red)
               ],
             ),
           ),
@@ -140,8 +73,45 @@ class _HomeScreenState extends State<HomeScreen> {
             style: GoogleFonts.nunitoSans(
                 color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 15),
           ),
-         
         ],
+      ),
+    );
+  }
+
+  Row_Container(Icon icon, String text, Color iconcolor) {
+    Service service = Provider.of<Service>(context);
+    return Padding(
+      padding: const EdgeInsets.only(left: 8.0),
+      child: GestureDetector(
+        onTap: () {
+          print(service.color);
+          text == "Alarm" ? service.color = Colors.red : null;
+        },
+        child: Container(
+          height: 50,
+          width: 115,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10), color: service.color),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: 5,
+              ),
+              Icon(icon.icon, color: iconcolor),
+              SizedBox(
+                width: 5,
+              ),
+              Text(
+                text.toString(),
+                style: GoogleFonts.nunitoSans(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

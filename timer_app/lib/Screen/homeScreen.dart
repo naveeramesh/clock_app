@@ -1,9 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'dart:math';
-
-import 'package:timer_app/widgets/clock_paint.dart';
-
+import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import 'package:timer_app/Screen/clock.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -15,49 +14,39 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
+    DateTime dateTime = DateTime.now();
     return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        title: Text(
+          "Clock",
+          style: GoogleFonts.nunitoSans(
+              color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+      ),
       backgroundColor: Colors.black,
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
-              color: Colors.transparent,
-              alignment: Alignment.center,
-              child: CLock()),
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Container(
+                color: Colors.transparent,
+                alignment: Alignment.center,
+                child: CLock()),
+          ),
+          Text(
+            DateFormat('hh:mm a').format(DateTime.now()).toString(),
+            style: GoogleFonts.nunitoSans(
+                color: Colors.white, fontWeight: FontWeight.bold, fontSize: 25),
+          ),
+          Text(
+            DateFormat.yMMMd().format(dateTime).toString(),
+            style: GoogleFonts.nunitoSans(
+                color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 15),
+          ),
         ],
       ),
     );
   }
 }
-
-class CLock extends StatefulWidget {
-  const CLock({Key? key}) : super(key: key);
-
-  @override
-  _CLockState createState() => _CLockState();
-}
-
-class _CLockState extends State<CLock> {
-  @override
-  void initState() {
-    Timer.periodic(Duration(seconds: 1), (timer) {
-      setState(() {});
-    });
-
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 200,
-      width: 200,
-      child: Transform.rotate(
-        angle: -pi / 2,
-        child: CustomPaint(painter:ClockPainter(),)
-      ),
-    );
-  }
-}
-
-

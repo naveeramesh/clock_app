@@ -1,10 +1,9 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
-import 'package:timer_app/providers/service.dart';
+import 'package:timer_app/models/menu_type.dart';
 
 import 'Screen/homeScreen.dart';
 
@@ -16,15 +15,12 @@ class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => Service(),
-      child: MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
-        home: const SplashScreen(),
+    return MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
       ),
+      home: const SplashScreen(),
     );
   }
 }
@@ -43,7 +39,11 @@ class _SplashScreenState extends State<SplashScreen> {
     Timer(
         const Duration(seconds: 5),
         () => Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (b) => const HomeScreen())));
+            context,
+            MaterialPageRoute(
+                builder: (b) => ChangeNotifierProvider(
+                    create: (context) => MenuType(title: "Alarm"),
+                    child: const HomeScreen()))));
   }
 
   @override

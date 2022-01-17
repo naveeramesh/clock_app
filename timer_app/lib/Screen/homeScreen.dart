@@ -1,11 +1,10 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:timer_app/Screen/clock.dart';
-import 'package:timer_app/providers/service.dart';
+import 'package:timer_app/models/menu_type.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -53,13 +52,10 @@ class _HomeScreenState extends State<HomeScreen> {
           Padding(
             padding: const EdgeInsets.only(top: 30.0, left: 10, right: 10),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Row_Container(Icon(Icons.alarm), "Alarm", Colors.amber),
-                Row_Container(Icon(Icons.timelapse), "Timer", Colors.blue),
-                Row_Container(Icon(Icons.lock_clock), "Watch", Colors.red)
-              ],
-            ),
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: items
+                    .map((currentmenutype) => Row_Container(currentmenutype))
+                    .toList()),
           ),
           Padding(
             padding: const EdgeInsets.only(top: 50.0, bottom: 20),
@@ -83,34 +79,42 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Row_Container(Icon icon, String text, Color iconcolor) {
+  Widget Row_Container(MenuType currentmenutype) {
     return Padding(
       padding: const EdgeInsets.only(left: 8.0),
-      child: GestureDetector(
-        child: Container(
-          height: 50,
-          width: 100,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: text == "Alarm" ? Colors.grey[900]! : Colors.transparent),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: 5,
-              ),
-              Icon(icon.icon, color: iconcolor),
-              SizedBox(
-                width: 5,
-              ),
-              Text(
-                text.toString(),
-                style: GoogleFonts.nunitoSans(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
+      child: Consumer<MenuType>(
+        builder: (_, value, __) => GestureDetector(
+          onTap: () {
+            var final_menu = Provider.of<MenuType>(context, listen: false);
+            final_menu.update_fn(currentmenutype);
+          },
+          child: Container(
+            height: 50,
+            width: 100,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: currentmenutype.title == value.title
+                    ? Colors.grey[900]!
+                    : Colors.transparent),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 5,
                 ),
-              ),
-            ],
+                Icon(currentmenutype.icon?.icon, color: currentmenutype.color),
+                SizedBox(
+                  width: 5,
+                ),
+                Text(
+                  currentmenutype.title.toString(),
+                  style: GoogleFonts.nunitoSans(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

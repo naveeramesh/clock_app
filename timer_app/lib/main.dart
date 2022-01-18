@@ -14,7 +14,7 @@ void main() async {
 //for documentation
   WidgetsFlutterBinding.ensureInitialized();
 
-  var initializationSettingsAndroid = AndroidInitializationSettings('app_icon');
+  var initializationSettingsAndroid = AndroidInitializationSettings('clock');
   var initializationSettingsIOS = IOSInitializationSettings(
       requestAlertPermission: true,
       requestBadgePermission: true,

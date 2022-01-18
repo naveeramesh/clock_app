@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:timer_app/models/alarm.dart';
 
 class MenuType extends ChangeNotifier {
   String? title;
@@ -10,6 +11,7 @@ class MenuType extends ChangeNotifier {
   update_fn(MenuType menuType) {
     this.title = menuType.title;
     this.icon = menuType.icon;
+    this.color = menuType.color;
     print(title);
     print(icon);
     notifyListeners();
@@ -21,3 +23,4 @@ List<MenuType> items = [
   MenuType(title: "Timer", icon: Icon(Icons.timelapse), color: Colors.blue),
   MenuType(title: "Watch", icon: Icon(Icons.lock_clock), color: Colors.red)
 ];
+

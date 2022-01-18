@@ -31,6 +31,10 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        child: Icon(Icons.add),
+      ),
       appBar: AppBar(
         elevation: 0,
         centerTitle: true,
@@ -69,19 +73,11 @@ class _HomeScreenState extends State<HomeScreen> {
             style: GoogleFonts.nunitoSans(
                 color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 15),
           ),
-          Spacer(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Padding(
-                  padding: const EdgeInsets.only(right: 30.0, bottom: 10),
-                  child: Consumer<MenuType>(
-                      builder: (_, value, __) => value.title == "Alarm"
-                          ? FloatingActionButton(
-                              onPressed: () {}, child: Icon(Icons.add))
-                          : SizedBox())),
-            ],
-          )
+          Consumer<MenuType>(
+              builder: (_, value, __) =>
+                  value.title == "Alarm" ? ListView(
+                    children:[]
+                  ) : SizedBox())
         ],
       ),
     );

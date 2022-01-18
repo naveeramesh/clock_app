@@ -30,6 +30,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   flutter:
     sdk: flutter
+  flutter_local_notifications: ^9.2.0
   google_fonts: ^2.2.0
   intl: ^0.17.0
   lottie: ^1.2.1

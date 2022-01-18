@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:timer_app/Screen/clock.dart';
+import 'package:timer_app/models/alarm.dart';
 import 'package:timer_app/models/menu_type.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -73,11 +74,87 @@ class _HomeScreenState extends State<HomeScreen> {
             style: GoogleFonts.nunitoSans(
                 color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 15),
           ),
+          SizedBox(
+            height: 20,
+          ),
           Consumer<MenuType>(
-              builder: (_, value, __) =>
-                  value.title == "Alarm" ? ListView(
-                    children:[]
-                  ) : SizedBox())
+              builder: (_, value, __) => value.title == "Alarm"
+                  ? Expanded(
+                      child: ListView(
+                          children: alarm_items.map((e) {
+                        return Padding(
+                          padding: const EdgeInsets.only(
+                              top: 20.0, left: 30, right: 30, bottom: 20),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                    color: Colors.red.withOpacity(0.5),
+                                    blurRadius: 5,
+                                    spreadRadius: 2)
+                              ],
+                              gradient: LinearGradient(
+                                  colors: [Colors.pink, Colors.purple]),
+                              // gradient: LinearGradient(colors: e.color),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Icon(
+                                      Icons.label,
+                                      color: Colors.white,
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text(
+                                      e.description.toString(),
+                                      style: GoogleFonts.nunitoSans(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16),
+                                    ),
+                                    Spacer(),
+                                    Switch(
+                                        activeColor: Colors.white,
+                                        value: e.isset!,
+                                        onChanged: (bool value) {})
+                                  ],
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 10.0),
+                                  child: Text(
+                                    e.day.toString(),
+                                    style: GoogleFonts.nunitoSans(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 15),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 10.0, bottom: 10),
+                                  child: Text(
+                                    "10:00 AM",
+                                    style: GoogleFonts.nunitoSans(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 22),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }).toList()),
+                    )
+                  : SizedBox())
         ],
       ),
     );

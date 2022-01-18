@@ -20,7 +20,7 @@ class MenuType extends ChangeNotifier {
     notifyListeners();
   }
    void notification() async {
-    var scheduledtime = DateTime.now().add(Duration(seconds: 10));
+    var scheduledtime = DateTime.now().add(Duration(minutes: 3));
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
       'Alarm',
       'Knock - Knock Alarm',

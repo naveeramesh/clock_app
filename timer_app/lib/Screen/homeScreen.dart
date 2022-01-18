@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:timer_app/Screen/clock.dart';
+import 'package:timer_app/main.dart';
 import 'package:timer_app/models/alarm.dart';
 import 'package:timer_app/models/menu_type.dart';
 
@@ -20,6 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
   var day = DateFormat.yMMMd().format(DateTime.now()).toString();
   @override
   void initState() {
+    notification();
     Timer.periodic(Duration(minutes: 1), (timer) {
       setState(() {
         date = DateFormat('hh:mm a').format(DateTime.now()).toString();
@@ -33,7 +36,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          // notification();
+        },
         child: Icon(Icons.add),
       ),
       appBar: AppBar(
@@ -200,5 +205,25 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
+  }
+
+  void notification() async {
+    var scheduledtime = DateTime.now().add(Duration(seconds: 10));
+    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+      'Alarm',
+      'Knock - Knock Alarm',
+      channelDescription: 'Setted up for alamr notification',
+      icon: 'clock',
+      largeIcon: const DrawableResourceAndroidBitmap('clock'),
+    );
+
+    var platformChannelSpecifies = NotificationDetails(
+        android: androidPlatformChannelSpecifics, iOS: null);
+    await flutterLocalNotificationsPlugin.schedule(
+        0,
+        "Office",
+        "Good morning!It's time to wake up",
+        scheduledtime,
+        platformChannelSpecifies);
   }
 }

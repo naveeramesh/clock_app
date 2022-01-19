@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "454668969398",
+    "project_id": "clock-bbcb9",
+    "storage_bucket": "clock-bbcb9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:454668969398:android:dd6ec8ec6844f4a7384d17",
+        "android_client_info": {
+          "package_name": "com.example.timer_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "454668969398-2sai4ci3n8ha36pokvqjaj1gm712jcpi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.timer_app",
+            "certificate_hash": "a4ae8f649dc59dab54b36486fcabc55107367959"
+          }
+        },
+        {
+          "client_id": "454668969398-45qtju31skom5khia4kda8mfh09n7e2a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDFjbZDLbeqDAY4OmKJdo4eeLOhvqLfHo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "454668969398-45qtju31skom5khia4kda8mfh09n7e2a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,18 +1,19 @@
 import 'dart:async';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
+import 'package:timer_app/database/firebase.dart';
 import 'package:timer_app/models/menu_type.dart';
 import 'Screen/homeScreen.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 void main() async {
-//Mentioned in local notification document to ensure these intialization just check the pub dev
-//for documentation
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
 
   var initializationSettingsAndroid = AndroidInitializationSettings('clock');
   var initializationSettingsIOS = IOSInitializationSettings(
@@ -70,9 +71,12 @@ class _SplashScreenState extends State<SplashScreen> {
         () => Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-                builder: (b) => ChangeNotifierProvider(
-                    create: (context) => MenuType(title: "Alarm"),
-                    child: const HomeScreen()))));
+                builder: (b) => MultiProvider(providers: [
+                      ChangeNotifierProvider(
+                          create: (context) => MenuType(title: "Alarm")),
+                      ChangeNotifierProvider(
+                          create: (context) => Firebase_App()),
+                    ], child: const HomeScreen()))));
   }
 
   @override

@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:timer_app/Screen/clock.dart';
 import 'package:timer_app/database/db_helper.dart';
+import 'package:timer_app/database/firebase.dart';
 import 'package:timer_app/models/alarm.dart';
 import 'package:timer_app/models/menu_type.dart';
 
@@ -18,17 +20,13 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   TextEditingController titlecontroller = TextEditingController();
   TextEditingController descontroller = TextEditingController();
-  DatabaseHelper databaseHelper = DatabaseHelper();
 
   String currenttime = DateFormat('hh:mm a').format(DateTime.now()).toString();
   var date = DateFormat('hh:mm a').format(DateTime.now()).toString();
   var day = DateFormat.yMMMd().format(DateTime.now()).toString();
+
   @override
   void initState() {
-    databaseHelper.initializedatabase().then((value) {
-      print("Database Initialized");
-    });
-
     Timer.periodic(Duration(minutes: 1), (timer) {
       setState(() {
         date = DateFormat('hh:mm a').format(DateTime.now()).toString();
@@ -41,6 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Firebase_App firebase_app = Provider.of<Firebase_App>(context);
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -137,14 +136,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     Spacer(),
                     GestureDetector(
                       onTap: () {
-                        // print(currenttime);
-
                         var alarm = Alarm(
+                            
+                            isactive: 1,
                             title: titlecontroller.text.toString(),
                             description: descontroller.text.toString(),
                             datatime: DateTime.parse(currenttime));
-
-                        databaseHelper.insertAlarm(alarm);
+                        firebase_app.adddata(alarm);
                       },
                       child: Container(
                         height: 50,
@@ -216,84 +214,39 @@ class _HomeScreenState extends State<HomeScreen> {
           SizedBox(
             height: 20,
           ),
-          // Consumer<MenuType>(
-          //     builder: (_, value, __) => value.title == "Alarm"
-          //         ? Expanded(
-          //             child: ListView(
-          //                 children: alarm_items.map((e) {
-          //               return Padding(
-          //                 padding: const EdgeInsets.only(
-          //                     top: 20.0, left: 30, right: 30, bottom: 20),
-          //                 child: Container(
-          //                   decoration: BoxDecoration(
-          //                     boxShadow: [
-          //                       BoxShadow(
-          //                           color: Colors.red.withOpacity(0.5),
-          //                           blurRadius: 5,
-          //                           spreadRadius: 2)
-          //                     ],
-          //                     gradient: LinearGradient(
-          //                         colors: [Colors.pink, Colors.purple]),
-          //                     // gradient: LinearGradient(colors: e.color),
-          //                     borderRadius: BorderRadius.circular(20),
-          //                   ),
-          //                   child: Column(
-          //                     crossAxisAlignment: CrossAxisAlignment.start,
-          //                     children: [
-          //                       Row(
-          //                         children: [
-          //                           SizedBox(
-          //                             width: 10,
-          //                           ),
-          //                           Icon(
-          //                             Icons.label,
-          //                             color: Colors.white,
-          //                           ),
-          //                           SizedBox(
-          //                             width: 10,
-          //                           ),
-          //                           Text(
-          //                             e.description.toString(),
-          //                             style: GoogleFonts.nunitoSans(
-          //                                 color: Colors.white,
-          //                                 fontWeight: FontWeight.bold,
-          //                                 fontSize: 16),
-          //                           ),
-          //                           Spacer(),
-          //                           Switch(
-          //                               activeColor: Colors.white,
-          //                               value: e.isset!,
-          //                               onChanged: (bool value) {})
-          //                         ],
-          //                       ),
-          //                       Padding(
-          //                         padding: const EdgeInsets.only(left: 10.0),
-          //                         child: Text(
-          //                           e.day.toString(),
-          //                           style: GoogleFonts.nunitoSans(
-          //                               color: Colors.white,
-          //                               fontWeight: FontWeight.bold,
-          //                               fontSize: 15),
-          //                         ),
-          //                       ),
-          //                       Padding(
-          //                         padding: const EdgeInsets.only(
-          //                             left: 10.0, bottom: 10),
-          //                         child: Text(
-          //                           "10:00 AM",
-          //                           style: GoogleFonts.nunitoSans(
-          //                               color: Colors.white,
-          //                               fontWeight: FontWeight.bold,
-          //                               fontSize: 22),
-          //                         ),
-          //                       ),
-          //                     ],
-          //                   ),
-          //                 ),
-          //               );
-          //             }).toList()),
-          //           )
-          //         : SizedBox())
+          Consumer<MenuType>(
+            builder: (context, value, child) =>
+                value.title == "Alarm" ? Container() : SizedBox(),
+          ),
+          Expanded(
+              child: Container(
+                  child: StreamBuilder<QuerySnapshot>(
+                      stream: FirebaseFirestore.instance
+                          .collection("Alarms")
+                          .snapshots(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return Center(
+                            child: CircularProgressIndicator(
+                              color: Colors.blue,
+                            ),
+                          );
+                        } else {
+                          return ListView.builder(
+                            itemCount: snapshot.data!.docs.length,
+                            itemBuilder: (context, index) {
+                              return Container(
+                                width: double.infinity,
+                                height: 100,
+                                color: Colors.red,
+                                child:
+                                    Text(snapshot.data!.docs[index]['title']),
+                              );
+                            },
+                          );
+                        }
+                      })))
         ],
       ),
     );

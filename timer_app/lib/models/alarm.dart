@@ -1,14 +1,14 @@
 
 class Alarm {
     Alarm({
-        this.id,
+      required  this.id,
        required this.title,
        required this.description,
         this.isactive,
        required this.datatime,
     });
 
-    String? id;
+    int id;
     String title;
     String description;
     int? isactive;

@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timer_app/models/alarm.dart';
+
+import '../main.dart';
 
 class Firebase_App extends ChangeNotifier {
   adddata(Alarm alarm) async {
@@ -10,7 +13,27 @@ class Firebase_App extends ChangeNotifier {
       "description": alarm.description,
       "alarm_time": alarm.datatime,
       "active": alarm.isactive,
+    }).whenComplete(() async {
+      var scheduledtime = alarm.datatime;
+      var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+        'Alarm',
+        'Knock - Knock Alarm',
+        channelDescription: 'Setted up for alamr notification',
+        icon: 'clock',
+        largeIcon: const DrawableResourceAndroidBitmap('clock'),
+      );
+
+      var platformChannelSpecifies = NotificationDetails(
+          android: androidPlatformChannelSpecifics, iOS: null);
+      await flutterLocalNotificationsPlugin.schedule(alarm.id, alarm.title,
+          alarm.description, scheduledtime, platformChannelSpecifies);
     });
+    notifyListeners();
+  }
+
+  deletedata(String title) async {
+    FirebaseFirestore.instance.collection("Alarms").doc(title).delete();
+
     notifyListeners();
   }
 }

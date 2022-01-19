@@ -19,27 +19,7 @@ class MenuType extends ChangeNotifier {
     print(icon);
     notifyListeners();
   }
-   void notification() async {
-    var scheduledtime = DateTime.now().add(Duration(minutes: 3));
-    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      'Alarm',
-      'Knock - Knock Alarm',
-      channelDescription: 'Setted up for alamr notification',
-      icon: 'clock',
-      largeIcon: const DrawableResourceAndroidBitmap('clock'),
-    );
-
-    var platformChannelSpecifies = NotificationDetails(
-        android: androidPlatformChannelSpecifics, iOS: null);
-    await flutterLocalNotificationsPlugin.schedule(
-        0,
-        "Office",
-        "Good morning!It's time to wake up",
-        scheduledtime,
-        platformChannelSpecifies);
-
-        
-  }
+  
 }
 
 List<MenuType> items = [

@@ -1,23 +1,20 @@
 import 'package:sqflite/sqflite.dart';
+import 'package:timer_app/models/alarm.dart';
 
 class DatabaseHelper {
   //global initialization of table name,version
   static final db_name = "alarm.db";
   static final db_version = 1;
 
-  static final tablename = "Alarm Table";
+  static final tablename = "Alarm_Table";
+
   static final columnid = "id";
   static final columnname = "title";
   static final columndetail = "description";
   static final columndatetime = "alarmdatetime";
   static final columnactive = "isactive";
 
-//creating a pro=ivate constructor for the class DatabaseHelper
-
-  DatabaseHelper._privateConstructor();
-  static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
-
-  //checking the datavase if null create a new database
+  //checking the database if null create a new database
 
   static Database? _database;
   Future<Database> get database async {
@@ -37,13 +34,50 @@ class DatabaseHelper {
         await openDatabase(path, version: db_version, onCreate: (db, version) {
       //creating a table
       db.execute('''
-      CREATE TABLE $tablename
-      $columnid integer primary key autoincrement,
-      $columnname text NOT NULL,
-      $columndatetime text NOT NULL,
-      $columndetail integer,
-          ''');
+       CREATE TABLE $tablename ( 
+          $columnid INTEGER PRIMARY KEY autoincrement, 
+          $columnname TEXT NOT NULL,
+          $columndatetime TEXT NOT NULL,
+          $columndetail TEXT NOT NULL,
+          $columnactive INTEGER)
+      ''');
     });
     return database;
+  }
+
+  Future<Alarm> insertAlarm(Alarm alarmInfo) async {
+    var db = await this.database;
+    Map<String, dynamic> row = {
+      columnid: alarmInfo.id,
+      columnname: alarmInfo.title,
+      columndetail: alarmInfo.description,
+      columnactive: alarmInfo.isactive,
+      columndatetime: alarmInfo.datatime.toIso8601String(),
+    };
+    final result = await db.insert(tablename, row);
+    print(result);
+
+    return alarmInfo;
+  }
+
+  void print_table() async {
+    //How to print table
+    print("Ramesh");
+    var db = await this.database;
+    (await db.query(tablename, columns: [
+      columnid,
+      columndatetime,
+      columnactive,
+      columndetail,
+      columnname
+    ]))
+        .forEach((row) {
+      print(row.values);
+    });
+  }
+
+  void delete_table() async {
+    var db = await this.database;
+    await db.execute("DROP TABLE IF EXISTS $tablename");
   }
 }

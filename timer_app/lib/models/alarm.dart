@@ -1,14 +1,17 @@
 class Alarm {
-  DateTime? dateTime;
-  String? description;
-  String? day;
-  bool? isset;
+  Alarm({
+    this.id,
+    required this.title,
+    required this.description,
+    this.isactive,
+    required this.datatime,
+  });
 
-  Alarm(this.dateTime, this.day, this.description, this.isset);
+  int? id;
+  String title;
+  String description;
+  int? isactive;
+  DateTime datatime;
 }
 
-List<Alarm> alarm_items = [
-  Alarm(DateTime.now(), "Mon-Fri", "Regulae Class", true),
-  Alarm(DateTime.now(), "Sat", "Gym", true),
-  Alarm(DateTime.now(), "Sun", "Outing", true),
-];
+

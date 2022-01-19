@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:timer_app/Screen/clock.dart';
+import 'package:timer_app/database/db_helper.dart';
 import 'package:timer_app/models/alarm.dart';
 import 'package:timer_app/models/menu_type.dart';
 
@@ -15,14 +16,23 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  DateTime dateTime = DateTime.now();
+  TextEditingController titlecontroller = TextEditingController();
+  TextEditingController descontroller = TextEditingController();
+  DatabaseHelper databaseHelper = DatabaseHelper();
+
+  String currenttime = DateFormat('hh:mm a').format(DateTime.now()).toString();
   var date = DateFormat('hh:mm a').format(DateTime.now()).toString();
   var day = DateFormat.yMMMd().format(DateTime.now()).toString();
   @override
   void initState() {
+    databaseHelper.initializedatabase().then((value) {
+      print("Database Initialized");
+    });
+
     Timer.periodic(Duration(minutes: 1), (timer) {
       setState(() {
         date = DateFormat('hh:mm a').format(DateTime.now()).toString();
+        currenttime;
       });
     });
 
@@ -34,8 +44,134 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          final setalarm = Provider.of<MenuType>(context, listen: false);
-          setalarm.notification();
+          // final setalarm = Provider.of<MenuType>(context, listen: false);
+          // setalarm.notification();
+          showModalBottomSheet(
+            context: context,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+            ),
+            builder: (context) {
+              return Container(
+                height: MediaQuery.of(context).size.height / 3,
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20.0),
+                      child: GestureDetector(
+                        onTap: () async {
+                          TimeOfDay? newTime = await showTimePicker(
+                            context: context,
+                            initialTime: TimeOfDay.now(),
+                          );
+                          if (newTime != null) {
+                            var now = DateTime.now();
+                            var newdateTime = DateTime(
+                              now.year,
+                              now.month,
+                              now.day,
+                              newTime.hour,
+                              newTime.minute,
+                            );
+                            setState(() {
+                              currenttime = newdateTime.toString();
+                            });
+                          }
+                        },
+                        child: Container(
+                            height: 60,
+                            child: Center(
+                                child: Text(
+                              currenttime,
+                              style: GoogleFonts.nunitoSans(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 25),
+                            ))),
+                      ),
+                    ),
+                    Container(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 30.0, right: 30),
+                        child: TextField(
+                          controller: titlecontroller,
+                          decoration: InputDecoration(
+                            enabledBorder: UnderlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.transparent)),
+                            hintText: "Title",
+                            hintStyle: GoogleFonts.nunitoSans(
+                                color: Colors.black,
+                                fontWeight: FontWeight.normal,
+                                fontSize: 18),
+                          ),
+                          style: GoogleFonts.nunitoSans(
+                              color: Colors.black,
+                              fontWeight: FontWeight.normal,
+                              fontSize: 18),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 30.0, right: 30),
+                        child: TextField(
+                          controller: descontroller,
+                          decoration: InputDecoration(
+                            enabledBorder: UnderlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.transparent)),
+                            hintText: "Description",
+                            hintStyle: GoogleFonts.nunitoSans(
+                                color: Colors.black,
+                                fontWeight: FontWeight.normal,
+                                fontSize: 18),
+                          ),
+                          style: GoogleFonts.nunitoSans(
+                              color: Colors.black,
+                              fontWeight: FontWeight.normal,
+                              fontSize: 18),
+                        ),
+                      ),
+                    ),
+                    Spacer(),
+                    GestureDetector(
+                      onTap: () {
+                        // print(currenttime);
+
+                        var alarm = Alarm(
+                            title: titlecontroller.text.toString(),
+                            description: descontroller.text.toString(),
+                            datatime: DateTime.parse(currenttime));
+
+                        databaseHelper.insertAlarm(alarm);
+                      },
+                      child: Container(
+                        height: 50,
+                        width: 100,
+                        decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                                colors: [Colors.pink, Colors.purple]),
+                            borderRadius: BorderRadius.circular(10)),
+                        child: Center(
+                          child: Text(
+                            "Set Alarm",
+                            style: GoogleFonts.nunitoSans(
+                              color: Colors.white,
+                              fontWeight: FontWeight.normal,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
         },
         child: Icon(Icons.add),
       ),
@@ -80,84 +216,84 @@ class _HomeScreenState extends State<HomeScreen> {
           SizedBox(
             height: 20,
           ),
-          Consumer<MenuType>(
-              builder: (_, value, __) => value.title == "Alarm"
-                  ? Expanded(
-                      child: ListView(
-                          children: alarm_items.map((e) {
-                        return Padding(
-                          padding: const EdgeInsets.only(
-                              top: 20.0, left: 30, right: 30, bottom: 20),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              boxShadow: [
-                                BoxShadow(
-                                    color: Colors.red.withOpacity(0.5),
-                                    blurRadius: 5,
-                                    spreadRadius: 2)
-                              ],
-                              gradient: LinearGradient(
-                                  colors: [Colors.pink, Colors.purple]),
-                              // gradient: LinearGradient(colors: e.color),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Icon(
-                                      Icons.label,
-                                      color: Colors.white,
-                                    ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Text(
-                                      e.description.toString(),
-                                      style: GoogleFonts.nunitoSans(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16),
-                                    ),
-                                    Spacer(),
-                                    Switch(
-                                        activeColor: Colors.white,
-                                        value: e.isset!,
-                                        onChanged: (bool value) {})
-                                  ],
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 10.0),
-                                  child: Text(
-                                    e.day.toString(),
-                                    style: GoogleFonts.nunitoSans(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 15),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 10.0, bottom: 10),
-                                  child: Text(
-                                    "10:00 AM",
-                                    style: GoogleFonts.nunitoSans(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 22),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      }).toList()),
-                    )
-                  : SizedBox())
+          // Consumer<MenuType>(
+          //     builder: (_, value, __) => value.title == "Alarm"
+          //         ? Expanded(
+          //             child: ListView(
+          //                 children: alarm_items.map((e) {
+          //               return Padding(
+          //                 padding: const EdgeInsets.only(
+          //                     top: 20.0, left: 30, right: 30, bottom: 20),
+          //                 child: Container(
+          //                   decoration: BoxDecoration(
+          //                     boxShadow: [
+          //                       BoxShadow(
+          //                           color: Colors.red.withOpacity(0.5),
+          //                           blurRadius: 5,
+          //                           spreadRadius: 2)
+          //                     ],
+          //                     gradient: LinearGradient(
+          //                         colors: [Colors.pink, Colors.purple]),
+          //                     // gradient: LinearGradient(colors: e.color),
+          //                     borderRadius: BorderRadius.circular(20),
+          //                   ),
+          //                   child: Column(
+          //                     crossAxisAlignment: CrossAxisAlignment.start,
+          //                     children: [
+          //                       Row(
+          //                         children: [
+          //                           SizedBox(
+          //                             width: 10,
+          //                           ),
+          //                           Icon(
+          //                             Icons.label,
+          //                             color: Colors.white,
+          //                           ),
+          //                           SizedBox(
+          //                             width: 10,
+          //                           ),
+          //                           Text(
+          //                             e.description.toString(),
+          //                             style: GoogleFonts.nunitoSans(
+          //                                 color: Colors.white,
+          //                                 fontWeight: FontWeight.bold,
+          //                                 fontSize: 16),
+          //                           ),
+          //                           Spacer(),
+          //                           Switch(
+          //                               activeColor: Colors.white,
+          //                               value: e.isset!,
+          //                               onChanged: (bool value) {})
+          //                         ],
+          //                       ),
+          //                       Padding(
+          //                         padding: const EdgeInsets.only(left: 10.0),
+          //                         child: Text(
+          //                           e.day.toString(),
+          //                           style: GoogleFonts.nunitoSans(
+          //                               color: Colors.white,
+          //                               fontWeight: FontWeight.bold,
+          //                               fontSize: 15),
+          //                         ),
+          //                       ),
+          //                       Padding(
+          //                         padding: const EdgeInsets.only(
+          //                             left: 10.0, bottom: 10),
+          //                         child: Text(
+          //                           "10:00 AM",
+          //                           style: GoogleFonts.nunitoSans(
+          //                               color: Colors.white,
+          //                               fontWeight: FontWeight.bold,
+          //                               fontSize: 22),
+          //                         ),
+          //                       ),
+          //                     ],
+          //                   ),
+          //                 ),
+          //               );
+          //             }).toList()),
+          //           )
+          //         : SizedBox())
         ],
       ),
     );

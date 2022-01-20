@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:timer_app/Screen/clock.dart';
 import 'package:timer_app/database/firebase.dart';
+import 'package:timer_app/database/timer.dart';
 import 'package:timer_app/models/alarm.dart';
 import 'package:timer_app/models/menu_type.dart';
 
@@ -42,8 +43,6 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // final setalarm = Provider.of<MenuType>(context, listen: false);
-          // setalarm.notification();
           showModalBottomSheet(
             context: context,
             shape: RoundedRectangleBorder(
@@ -139,7 +138,6 @@ class _HomeScreenState extends State<HomeScreen> {
                             FirebaseFirestore.instance.collection('Alarms');
                         var querySnapshot = await respectsQuery.get();
                         var totalEquals = querySnapshot.docs.length;
-                        print(totalEquals);
 
                         var alarm = Alarm(
                             id: totalEquals++,
@@ -220,103 +218,160 @@ class _HomeScreenState extends State<HomeScreen> {
             height: 20,
           ),
           Consumer<MenuType>(
-            builder: (context, value, child) =>
-                value.title == "Alarm" ? Container() : SizedBox(),
-          ),
-          Expanded(
-              child: Container(
-                  child: StreamBuilder<QuerySnapshot>(
-                      stream: FirebaseFirestore.instance
-                          .collection("Alarms")
-                          .where("active", isEqualTo: 1)
-                          .snapshots(),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return Center(
-                            child: CircularProgressIndicator(
-                              color: Colors.blue,
-                            ),
-                          );
-                        } else {
-                          return ListView.builder(
-                            itemCount: snapshot.data!.docs.length,
-                            itemBuilder: (context, index) {
-                              Timestamp timestamp = snapshot.data!.docs[index]
-                                  ['alarm_time'] as Timestamp;
-                              final DateTime dateTime = timestamp.toDate();
-                              final dateString =
-                                  DateFormat('hh:mm a').format(dateTime);
-                              final dayString =
-                                  DateFormat.yMMMd().format(dateTime);
-                              // final day = DateFormat.yMMMd(dateTime);
-                              return Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 30.0, right: 30, top: 30),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20),
-                                      gradient: LinearGradient(colors: [
-                                        Colors.pink,
-                                        Colors.purple
-                                      ])),
-                                  width: double.infinity,
-                                  height: 100,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 8.0, right: 8),
-                                    child: Row(
-                                      children: [
-                                        SizedBox(
-                                          width: 20,
-                                        ),
-                                        Icon(Icons.alarm,
-                                            color: Colors.white, size: 20),
-                                        SizedBox(
-                                          width: 20,
-                                        ),
-                                        Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(day,
-                                                style: GoogleFonts.nunitoSans(
-                                                    color: Colors.white,
-                                                    fontSize: 20,
-                                                    fontWeight:
-                                                        FontWeight.bold)),
-                                            SizedBox(
-                                              width: 5,
-                                            ),
-                                            Text(dateString,
-                                                style: GoogleFonts.nunitoSans(
-                                                    color: Colors.white,
-                                                    fontSize: 12,
-                                                    fontWeight:
-                                                        FontWeight.bold)),
-                                          ],
-                                        ),
-                                        Spacer(),
-                                        IconButton(
-                                            onPressed: () {
-                                              firebase_app.deletedata(snapshot
-                                                  .data!.docs[index]['id']);
-                                            },
-                                            icon: Icon(
-                                              Icons.delete,
-                                              color: Colors.white,
-                                            ))
-                                      ],
-                                    ),
+            builder: (context, value, child) => value.title == "Alarm"
+                ? Expanded(
+                    child: Container(
+                        child: StreamBuilder<QuerySnapshot>(
+                            stream: FirebaseFirestore.instance
+                                .collection("Alarms")
+                                .where("active", isEqualTo: 1)
+                                .snapshots(),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return Center(
+                                  child: CircularProgressIndicator(
+                                    color: Colors.blue,
                                   ),
-                                ),
-                              );
-                            },
-                          );
-                        }
-                      })))
+                                );
+                              } else {
+                                return ListView.builder(
+                                  itemCount: snapshot.data!.docs.length,
+                                  itemBuilder: (context, index) {
+                                    Timestamp timestamp = snapshot.data!
+                                        .docs[index]['alarm_time'] as Timestamp;
+                                    final DateTime dateTime =
+                                        timestamp.toDate();
+                                    final dateString =
+                                        DateFormat('hh:mm a').format(dateTime);
+                                    final dayString =
+                                        DateFormat.yMMMd().format(dateTime);
+                                    // final day = DateFormat.yMMMd(dateTime);
+                                    return Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 30.0, right: 30, top: 30),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                            gradient: LinearGradient(colors: [
+                                              Colors.pink,
+                                              Colors.purple
+                                            ])),
+                                        width: double.infinity,
+                                        height: 100,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 8.0, right: 8),
+                                          child: Row(
+                                            children: [
+                                              SizedBox(
+                                                width: 20,
+                                              ),
+                                              Icon(Icons.alarm,
+                                                  color: Colors.white,
+                                                  size: 20),
+                                              SizedBox(
+                                                width: 20,
+                                              ),
+                                              Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(day,
+                                                      style: GoogleFonts
+                                                          .nunitoSans(
+                                                              color:
+                                                                  Colors.white,
+                                                              fontSize: 20,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold)),
+                                                  SizedBox(
+                                                    width: 5,
+                                                  ),
+                                                  Text(dateString,
+                                                      style: GoogleFonts
+                                                          .nunitoSans(
+                                                              color:
+                                                                  Colors.white,
+                                                              fontSize: 12,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold)),
+                                                ],
+                                              ),
+                                              Spacer(),
+                                              IconButton(
+                                                  onPressed: () {
+                                                    firebase_app.deletedata(
+                                                        snapshot.data!
+                                                            .docs[index]['id']);
+                                                  },
+                                                  icon: Icon(
+                                                    Icons.delete,
+                                                    color: Colors.white,
+                                                  ))
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                );
+                              }
+                            })))
+                : SizedBox(),
+          ),
+          SizedBox(height: 50),
+          Consumer<MenuType>(
+              builder: (context, value, child) => value.title == "Timer"
+                  ? Expanded(child: Container(child: buildbutton()))
+                  : SizedBox()),
+        ],
+      ),
+    );
+  }
+
+  Widget buildbutton() {
+    final settimer = Provider.of<TimerProvider>(context, listen: false);
+    return GestureDetector(
+      onTap: () {
+        settimer.startTimer();
+      },
+      child: Column(
+        children: [
+          Container(
+            child: Consumer<TimerProvider>(
+              builder: (context, timer, child) => Text(
+                "${timer.hour} : ${timer.minute}:${timer.seconds} ",
+                style: GoogleFonts.nunitoSans(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 30),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Container(
+              height: 40,
+              width: 100,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  gradient: LinearGradient(
+                    colors: [Colors.blue[600]!, Colors.white12],
+                  )),
+              child: Center(
+                child: Text(
+                  "Start Timer",
+                  style: GoogleFonts.nunitoSans(color: Colors.white),
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );

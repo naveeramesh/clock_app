@@ -39,7 +39,8 @@ class Firebase_App extends ChangeNotifier {
         alarm.description,
         scheduledtime,
         platformChannelSpecifies,
-      ).whenComplete(() {
+      )
+          .whenComplete(() {
         Timer.periodic(Duration(seconds: 1), (timer) {
           final currentTime = DateTime.now();
           if (currentTime.isAfter(scheduledtime.add(Duration(seconds: 4))) &&
@@ -70,4 +71,6 @@ class Firebase_App extends ChangeNotifier {
 
     notifyListeners();
   }
+
+
 }

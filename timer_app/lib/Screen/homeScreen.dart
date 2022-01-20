@@ -5,7 +5,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:timer_app/Screen/clock.dart';
-import 'package:timer_app/database/db_helper.dart';
 import 'package:timer_app/database/firebase.dart';
 import 'package:timer_app/models/alarm.dart';
 import 'package:timer_app/models/menu_type.dart';
@@ -135,9 +134,15 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     Spacer(),
                     GestureDetector(
-                      onTap: () {
+                      onTap: () async {
+                        var respectsQuery =
+                            FirebaseFirestore.instance.collection('Alarms');
+                        var querySnapshot = await respectsQuery.get();
+                        var totalEquals = querySnapshot.docs.length;
+                        print(totalEquals);
+
                         var alarm = Alarm(
-                          id: 1,
+                            id: totalEquals++,
                             isactive: 1,
                             title: titlecontroller.text.toString(),
                             description: descontroller.text.toString(),
@@ -223,6 +228,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: StreamBuilder<QuerySnapshot>(
                       stream: FirebaseFirestore.instance
                           .collection("Alarms")
+                          .where("active", isEqualTo: 1)
                           .snapshots(),
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
@@ -296,7 +302,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         IconButton(
                                             onPressed: () {
                                               firebase_app.deletedata(snapshot
-                                                  .data!.docs[index]['title']);
+                                                  .data!.docs[index]['id']);
                                             },
                                             icon: Icon(
                                               Icons.delete,

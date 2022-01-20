@@ -42,7 +42,7 @@ class Firebase_App extends ChangeNotifier {
       ).whenComplete(() {
         Timer.periodic(Duration(seconds: 1), (timer) {
           final currentTime = DateTime.now();
-          if (currentTime.isAfter(scheduledtime.add(Duration(seconds: 58))) &&
+          if (currentTime.isAfter(scheduledtime.add(Duration(seconds: 4))) &&
               currentTime.isBefore(endtime)) {
             print("Hello World");
             FirebaseFirestore.instance

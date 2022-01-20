@@ -5,9 +5,9 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
-import 'package:timer_app/database/firebase.dart';
-import 'package:timer_app/database/timer.dart';
 import 'package:timer_app/models/menu_type.dart';
+import 'package:timer_app/providers/firebase.dart';
+import 'package:timer_app/providers/timer.dart';
 import 'Screen/homeScreen.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -77,8 +77,7 @@ class _SplashScreenState extends State<SplashScreen> {
                           create: (context) => MenuType(title: "Alarm")),
                       ChangeNotifierProvider(
                           create: (context) => Firebase_App()),
-                      ChangeNotifierProvider(
-                          create: (context) => TimerProvider()),
+                      ChangeNotifierProvider(create: (context) => StopWatch()),
                     ], child: const HomeScreen()))));
   }
 

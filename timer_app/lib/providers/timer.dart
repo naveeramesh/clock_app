@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
-class TimerProvider with ChangeNotifier {
+class StopWatch with ChangeNotifier {
   Timer? _timer;
   int _hour = 0;
   int _minute = 0;
@@ -73,5 +73,13 @@ class TimerProvider with ChangeNotifier {
 
       notifyListeners();
     });
+
+    
   }
+  void reset() {
+      _seconds = 0;
+      _hour = 0;
+      _minute = 0;
+      notifyListeners();
+    }
 }

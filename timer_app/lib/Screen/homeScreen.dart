@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:timer_app/Screen/clock.dart';
 import 'package:timer_app/models/alarm.dart';
 import 'package:timer_app/models/menu_type.dart';
+import 'package:timer_app/providers/countdown.dart';
 import 'package:timer_app/providers/firebase.dart';
 import 'package:timer_app/providers/timer.dart';
 
@@ -327,12 +328,54 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           SizedBox(height: 50),
           Consumer<MenuType>(
+              builder: (context, value, child) => value.title == "Timer"
+                  ? Expanded(child: Container(child: buildTimer()))
+                  : SizedBox()),
+          SizedBox(height: 50),
+          Consumer<MenuType>(
               builder: (context, value, child) => value.title == "Watch"
                   ? Expanded(child: Container(child: buildbutton()))
                   : SizedBox()),
         ],
       ),
     );
+  }
+
+  Widget buildTimer() {
+    return Column(children: [
+      Container(
+          height: 60,
+          child: Consumer<Countdown>(
+            builder: (context, countdown, child) => Text(
+              countdown.seconds != 0 ? "${countdown.seconds}" : "Completed!!",
+              style: GoogleFonts.nunitoSans(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 30),
+            ),
+          )),
+      GestureDetector(
+        onTap: () {
+          final countdown = Provider.of<Countdown>(context, listen: false);
+          countdown.startcountdown();
+        },
+        child: Container(
+          height: 40,
+          width: 150,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              gradient: LinearGradient(
+                colors: [Colors.blue[600]!, Colors.white12],
+              )),
+          child: Center(
+            child: Text(
+              "Start Countdown",
+              style: GoogleFonts.nunitoSans(color: Colors.white),
+            ),
+          ),
+        ),
+      ),
+    ]);
   }
 
   Widget buildbutton() {

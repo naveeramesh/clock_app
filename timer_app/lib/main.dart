@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:timer_app/models/menu_type.dart';
+import 'package:timer_app/providers/countdown.dart';
 import 'package:timer_app/providers/firebase.dart';
 import 'package:timer_app/providers/timer.dart';
 import 'Screen/homeScreen.dart';
@@ -78,6 +79,7 @@ class _SplashScreenState extends State<SplashScreen> {
                       ChangeNotifierProvider(
                           create: (context) => Firebase_App()),
                       ChangeNotifierProvider(create: (context) => StopWatch()),
+                      ChangeNotifierProvider(create: (context) => Countdown()),
                     ], child: const HomeScreen()))));
   }
 

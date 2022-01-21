@@ -45,146 +45,154 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     Firebase_App firebase_app = Provider.of<Firebase_App>(context);
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showModalBottomSheet(
-            isScrollControlled: true,
-            context: context,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
-            ),
-            builder: (context) {
-              return Padding(
-                padding: MediaQuery.of(context).viewInsets,
-                child: Container(
-                  height: MediaQuery.of(context).size.height / 3,
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 20.0),
-                        child: GestureDetector(
-                          onTap: () async {
-                            TimeOfDay? newTime = await showTimePicker(
-                              context: context,
-                              initialTime: TimeOfDay.now(),
-                            );
-                            if (newTime != null) {
-                              var now = DateTime.now();
-                              var newdateTime = DateTime(
-                                now.year,
-                                now.month,
-                                now.day,
-                                newTime.hour,
-                                newTime.minute,
-                              );
-                              if (mounted) {
-                                setState(() {
-                                  currenttime = newdateTime.toString();
-                                });
-                              }
-                            }
-                          },
-                          child: Container(
-                              height: 60,
-                              child: Center(
-                                  child: Text(
-                                currenttime,
-                                style: GoogleFonts.nunitoSans(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 25),
-                              ))),
-                        ),
-                      ),
-                      Container(
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 30.0, right: 30),
-                          child: TextField(
-                            controller: titlecontroller,
-                            decoration: InputDecoration(
-                              enabledBorder: UnderlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Colors.transparent)),
-                              hintText: "Title",
-                              hintStyle: GoogleFonts.nunitoSans(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.normal,
-                                  fontSize: 18),
-                            ),
-                            style: GoogleFonts.nunitoSans(
-                                color: Colors.black,
-                                fontWeight: FontWeight.normal,
-                                fontSize: 18),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 30.0, right: 30),
-                          child: TextField(
-                            controller: descontroller,
-                            decoration: InputDecoration(
-                              enabledBorder: UnderlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Colors.transparent)),
-                              hintText: "Description",
-                              hintStyle: GoogleFonts.nunitoSans(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.normal,
-                                  fontSize: 18),
-                            ),
-                            style: GoogleFonts.nunitoSans(
-                                color: Colors.black,
-                                fontWeight: FontWeight.normal,
-                                fontSize: 18),
-                          ),
-                        ),
-                      ),
-                      Spacer(),
-                      GestureDetector(
-                        onTap: () async {
-                          var respectsQuery =
-                              FirebaseFirestore.instance.collection('Alarms');
-                          var querySnapshot = await respectsQuery.get();
-                          var totalEquals = querySnapshot.docs.length;
-
-                          var alarm = Alarm(
-                              id: totalEquals++,
-                              isactive: 1,
-                              title: titlecontroller.text.toString(),
-                              description: descontroller.text.toString(),
-                              datatime: DateTime.parse(currenttime));
-                          firebase_app.adddata(alarm);
-                        },
+      floatingActionButton: Consumer<MenuType>(
+        builder: (context, value, child) => value.title == "Alarm"
+            ? FloatingActionButton(
+                onPressed: () {
+                  showModalBottomSheet(
+                    isScrollControlled: true,
+                    context: context,
+                    shape: RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.vertical(top: Radius.circular(25.0)),
+                    ),
+                    builder: (context) {
+                      return Padding(
+                        padding: MediaQuery.of(context).viewInsets,
                         child: Container(
-                          height: 50,
-                          width: 100,
-                          decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                  colors: [Colors.pink, Colors.purple]),
-                              borderRadius: BorderRadius.circular(10)),
-                          child: Center(
-                            child: Text(
-                              "Set Alarm",
-                              style: GoogleFonts.nunitoSans(
-                                color: Colors.white,
-                                fontWeight: FontWeight.normal,
+                          height: MediaQuery.of(context).size.height / 3,
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(top: 20.0),
+                                child: GestureDetector(
+                                  onTap: () async {
+                                    TimeOfDay? newTime = await showTimePicker(
+                                      context: context,
+                                      initialTime: TimeOfDay.now(),
+                                    );
+                                    if (newTime != null) {
+                                      var now = DateTime.now();
+                                      var newdateTime = DateTime(
+                                        now.year,
+                                        now.month,
+                                        now.day,
+                                        newTime.hour,
+                                        newTime.minute,
+                                      );
+                                      if (mounted) {
+                                        setState(() {
+                                          currenttime = newdateTime.toString();
+                                        });
+                                      }
+                                    }
+                                  },
+                                  child: Container(
+                                      height: 60,
+                                      child: Center(
+                                          child: Text(
+                                        currenttime,
+                                        style: GoogleFonts.nunitoSans(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 25),
+                                      ))),
+                                ),
                               ),
-                            ),
+                              Container(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 30.0, right: 30),
+                                  child: TextField(
+                                    controller: titlecontroller,
+                                    decoration: InputDecoration(
+                                      enabledBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Colors.transparent)),
+                                      hintText: "Title",
+                                      hintStyle: GoogleFonts.nunitoSans(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.normal,
+                                          fontSize: 18),
+                                    ),
+                                    style: GoogleFonts.nunitoSans(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.normal,
+                                        fontSize: 18),
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 30.0, right: 30),
+                                  child: TextField(
+                                    controller: descontroller,
+                                    decoration: InputDecoration(
+                                      enabledBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: Colors.transparent)),
+                                      hintText: "Description",
+                                      hintStyle: GoogleFonts.nunitoSans(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.normal,
+                                          fontSize: 18),
+                                    ),
+                                    style: GoogleFonts.nunitoSans(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.normal,
+                                        fontSize: 18),
+                                  ),
+                                ),
+                              ),
+                              Spacer(),
+                              GestureDetector(
+                                onTap: () async {
+                                  var respectsQuery = FirebaseFirestore.instance
+                                      .collection('Alarms');
+                                  var querySnapshot = await respectsQuery.get();
+                                  var totalEquals = querySnapshot.docs.length;
+
+                                  var alarm = Alarm(
+                                      id: totalEquals++,
+                                      isactive: 1,
+                                      title: titlecontroller.text.toString(),
+                                      description:
+                                          descontroller.text.toString(),
+                                      datatime: DateTime.parse(currenttime));
+                                  firebase_app.adddata(alarm);
+                                },
+                                child: Container(
+                                  height: 50,
+                                  width: 100,
+                                  decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                          colors: [Colors.pink, Colors.purple]),
+                                      borderRadius: BorderRadius.circular(10)),
+                                  child: Center(
+                                    child: Text(
+                                      "Set Alarm",
+                                      style: GoogleFonts.nunitoSans(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.normal,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                            ],
                           ),
                         ),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
-          );
-        },
-        child: Icon(Icons.add),
+                      );
+                    },
+                  );
+                },
+                child: Icon(Icons.add),
+              )
+            : SizedBox(),
       ),
       appBar: AppBar(
         elevation: 0,

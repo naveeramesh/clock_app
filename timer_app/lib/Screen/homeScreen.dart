@@ -467,11 +467,14 @@ class _HomeScreenState extends State<HomeScreen> {
             backgroundColor: Colors.green,
             radius: 90,
             child: CircleAvatar(
-              radius: 88,
+              radius: 85,
               backgroundColor: Colors.black,
               child: Text(
                 "${value.totalsec}",
-                style: GoogleFonts.nunitoSans(color: Colors.white),
+                style: GoogleFonts.nunitoSans(
+                    color: Colors.white,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold),
               ),
             )),
       ),

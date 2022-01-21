@@ -54,8 +54,6 @@ class Countdown extends ChangeNotifier {
   }
 
   void stoptimer() {
-    
     _timer!.cancel();
-
   }
 }

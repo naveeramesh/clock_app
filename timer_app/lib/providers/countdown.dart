@@ -6,12 +6,12 @@ class Countdown extends ChangeNotifier {
   int _hour = 0;
   int _min = 0;
 
-  int totalsec = 0;
+  int _totalsec = 0;
   Timer? _timer;
   int get seconds => _seconds;
   int get hour => _hour;
   int get min => _min;
-
+  int get totalsec => _totalsec;
   void setsec(int value) {
     _seconds = value;
 
@@ -33,19 +33,29 @@ class Countdown extends ChangeNotifier {
   void startcountdown() {
     int tototalmin = _min * 60;
     int totalhour = _hour * 60 * 60;
-    totalsec = totalhour + tototalmin + _seconds;
+    _totalsec = totalhour + tototalmin + _seconds;
     notifyListeners();
   }
-  // void startcountdown() {
-  //   _seconds = 60;
 
-  //   _timer = Timer.periodic(Duration(seconds: 1), (timer) {
-  //     if (_seconds > 0) {
-  //       _seconds--;
-  //     } else {
-  //       print("Done");
-  //     }
+  void settimer() {
+    int tototalmin = _min * 60;
+    int totalhour = _hour * 60 * 60;
+    _totalsec = totalhour + tototalmin + _seconds;
 
-  //     notifyListeners();
-  //   });
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      if (_totalsec > 0) {
+        _totalsec--;
+      } else if (_totalsec == 0) {
+        _totalsec = 0;
+      }
+
+      notifyListeners();
+    });
+  }
+
+  void stoptimer() {
+    
+    _timer!.cancel();
+
+  }
 }

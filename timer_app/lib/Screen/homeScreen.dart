@@ -348,7 +348,6 @@ class _HomeScreenState extends State<HomeScreen> {
               builder: (context, value, child) => value.title == "Timer"
                   ? Expanded(child: Container(child: buildTimer()))
                   : SizedBox()),
-          SizedBox(height: 50),
           Consumer<MenuType>(
               builder: (context, value, child) => value.title == "Watch"
                   ? Expanded(child: Container(child: buildbutton()))
@@ -360,8 +359,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget buildTimer() {
     return Column(children: [
-      Expanded(
-          child: Row(
+      Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Column(
@@ -452,30 +450,102 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           )
         ],
-      )),
+      ),
+      SizedBox(
+        height: 50,
+      ),
       Consumer<Countdown>(
-          builder: (context, value, child) => Text(value.totalsec.toString(),
-              style: GoogleFonts.nunitoSans(color: Colors.white))),
-      SizedBox(height: 40),
-      GestureDetector(
-        onTap: () {
-          final countdown = Provider.of<Countdown>(context, listen: false);
-        },
-        child: Container(
-          height: 40,
-          width: 150,
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              gradient: LinearGradient(
-                colors: [Colors.blue[600]!, Colors.white12],
-              )),
-          child: Center(
-            child: Text(
-              "Start Countdown",
-              style: GoogleFonts.nunitoSans(color: Colors.white),
+        builder: (context, value, child) => CircleAvatar(
+            backgroundColor: Colors.green,
+            radius: 90,
+            child: CircleAvatar(
+              radius: 88,
+              backgroundColor: Colors.black,
+              child: Text(
+                "${value.totalsec}",
+                style: GoogleFonts.nunitoSans(color: Colors.white),
+              ),
+            )),
+      ),
+      Spacer(),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          GestureDetector(
+            onTap: () {
+              // if (seconds != 0) {
+              //   Timer.periodic(Duration(seconds: 1), (timer) {
+              //     setState(() {
+              //       if (seconds == 0 && min != 0) {
+              //         seconds = 60;
+              //       } else if (min == 0) {
+              //         seconds = 0;
+              //       } else {
+              //         seconds--;
+              //       }
+              //     });
+              //   });
+              // }
+              // if (min != 0) {
+              //   Timer.periodic(Duration(minutes: 1), (timer) {
+              //     setState(() {
+              //       if (min == 0 && hour != 0) {
+              //         min = 60;
+              //       } else if (hour == 0) {
+              //         min == 0;
+              //       } else {
+              //         min--;
+              //       }
+              //     });
+              //   });
+              // }
+              // if (hour != 0) {
+              //   Timer.periodic(Duration(hours: 1), (timer) {
+              //     setState(() {
+              //       if (hour == 0) {
+              //         hour = 0;
+              //       } else {
+              //         hour--;
+              //       }
+              //     });
+              //   });
+              // }
+              final countdown = Provider.of<Countdown>(context, listen: false);
+              countdown.settimer();
+            },
+            child: Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    gradient: LinearGradient(
+                      colors: [Colors.blue[600]!, Colors.white12],
+                    )),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Icon(Icons.play_arrow, color: Colors.white),
+                )),
+          ),
+          SizedBox(width: 20),
+          Consumer<Countdown>(
+            builder: (context, value, child) => GestureDetector(
+              onTap: () {
+                value.stoptimer();
+              },
+              child: Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      gradient: LinearGradient(
+                        colors: [Colors.blue[600]!, Colors.white12],
+                      )),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Icon(Icons.stop, color: Colors.white),
+                  )),
             ),
           ),
-        ),
+        ],
+      ),
+      SizedBox(
+        height: 20,
       ),
     ]);
   }
@@ -485,20 +555,26 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         Container(
           child: Consumer<StopWatch>(
-            builder: (context, timer, child) => Text(
-              "${timer.hour} : ${timer.minute} : ${timer.seconds} ",
-              style: GoogleFonts.nunitoSans(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 30),
+            builder: (context, timer, child) => CircleAvatar(
+              radius: 120,
+              backgroundColor: Colors.green,
+              child: CircleAvatar(
+                radius: 115,
+                backgroundColor: Colors.black,
+                child: Text(
+                  "${timer.hour} : ${timer.minute} : ${timer.seconds} ",
+                  style: GoogleFonts.nunitoSans(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 30),
+                ),
+              ),
             ),
           ),
         ),
-        SizedBox(
-          height: 30,
-        ),
+        Spacer(),
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             GestureDetector(
               onTap: () {
@@ -506,20 +582,18 @@ class _HomeScreenState extends State<HomeScreen> {
                 settimer.startTimer();
               },
               child: Container(
-                height: 40,
-                width: 100,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    gradient: LinearGradient(
-                      colors: [Colors.blue[600]!, Colors.white12],
-                    )),
-                child: Center(
-                  child: Text(
-                    "Start Timer",
-                    style: GoogleFonts.nunitoSans(color: Colors.white),
-                  ),
-                ),
-              ),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      gradient: LinearGradient(
+                        colors: [Colors.blue[600]!, Colors.white12],
+                      )),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Icon(Icons.play_arrow, color: Colors.white),
+                  )),
+            ),
+            SizedBox(
+              width: 20,
             ),
             GestureDetector(
               onTap: () {
@@ -527,67 +601,61 @@ class _HomeScreenState extends State<HomeScreen> {
                 settimer.stopTimer();
               },
               child: Container(
-                height: 40,
-                width: 100,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    gradient: LinearGradient(
-                      colors: [Colors.blue[600]!, Colors.white12],
-                    )),
-                child: Center(
-                  child: Text(
-                    "Stop",
-                    style: GoogleFonts.nunitoSans(color: Colors.white),
-                  ),
-                ),
-              ),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      gradient: LinearGradient(
+                        colors: [Colors.blue[600]!, Colors.white12],
+                      )),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Icon(Icons.stop, color: Colors.white),
+                  )),
+            ),
+            SizedBox(
+              width: 20,
             ),
             GestureDetector(
               onTap: () {
                 final settimer = Provider.of<StopWatch>(context, listen: false);
-                settimer.continueTimer();
+                settimer.reset();
               },
               child: Container(
-                height: 40,
-                width: 100,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    gradient: LinearGradient(
-                      colors: [Colors.blue[600]!, Colors.white12],
-                    )),
-                child: Center(
-                  child: Text(
-                    "Continue",
-                    style: GoogleFonts.nunitoSans(color: Colors.white),
-                  ),
-                ),
-              ),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      gradient: LinearGradient(
+                        colors: [Colors.blue[600]!, Colors.white12],
+                      )),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Icon(Icons.refresh, color: Colors.white),
+                  )),
             ),
           ],
         ),
         SizedBox(
-          height: 20,
+          height: 30,
         ),
         GestureDetector(
           onTap: () {
             final settimer = Provider.of<StopWatch>(context, listen: false);
-            settimer.reset();
+            settimer.continueTimer();
           },
           child: Container(
-            height: 40,
-            width: 100,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                gradient: LinearGradient(
-                  colors: [Colors.blue[600]!, Colors.white12],
-                )),
-            child: Center(
-              child: Text(
-                "Reset",
+              height: 50,
+              width: 160,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  gradient: LinearGradient(
+                    colors: [Colors.blue[600]!, Colors.white12],
+                  )),
+              child: Center(
+                  child: Text(
+                "Continue",
                 style: GoogleFonts.nunitoSans(color: Colors.white),
-              ),
-            ),
-          ),
+              ))),
+        ),
+        SizedBox(
+          height: 30,
         ),
       ],
     );

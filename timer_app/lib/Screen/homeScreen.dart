@@ -33,8 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
       if (mounted) {
         setState(() {
           date = DateFormat('hh:mm a').format(DateTime.now()).toString();
-          currenttime;
-        });
+         });
       }
     });
 
@@ -161,6 +160,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                           descontroller.text.toString(),
                                       datatime: DateTime.parse(currenttime));
                                   firebase_app.adddata(alarm);
+                                  titlecontroller.clear();
+                                  descontroller.clear();
+
+                                  Navigator.pop(context);
                                 },
                                 child: Container(
                                   height: 50,
@@ -484,43 +487,6 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           GestureDetector(
             onTap: () {
-              // if (seconds != 0) {
-              //   Timer.periodic(Duration(seconds: 1), (timer) {
-              //     setState(() {
-              //       if (seconds == 0 && min != 0) {
-              //         seconds = 60;
-              //       } else if (min == 0) {
-              //         seconds = 0;
-              //       } else {
-              //         seconds--;
-              //       }
-              //     });
-              //   });
-              // }
-              // if (min != 0) {
-              //   Timer.periodic(Duration(minutes: 1), (timer) {
-              //     setState(() {
-              //       if (min == 0 && hour != 0) {
-              //         min = 60;
-              //       } else if (hour == 0) {
-              //         min == 0;
-              //       } else {
-              //         min--;
-              //       }
-              //     });
-              //   });
-              // }
-              // if (hour != 0) {
-              //   Timer.periodic(Duration(hours: 1), (timer) {
-              //     setState(() {
-              //       if (hour == 0) {
-              //         hour = 0;
-              //       } else {
-              //         hour--;
-              //       }
-              //     });
-              //   });
-              // }
               final countdown = Provider.of<Countdown>(context, listen: false);
               countdown.settimer();
             },

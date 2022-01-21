@@ -104,3 +104,40 @@
 //     notifyListeners();
 //   }
 // }
+// if (seconds != 0) {
+              //   Timer.periodic(Duration(seconds: 1), (timer) {
+              //     setState(() {
+              //       if (seconds == 0 && min != 0) {
+              //         seconds = 60;
+              //       } else if (min == 0) {
+              //         seconds = 0;
+              //       } else {
+              //         seconds--;
+              //       }
+              //     });
+              //   });
+              // }
+              // if (min != 0) {
+              //   Timer.periodic(Duration(minutes: 1), (timer) {
+              //     setState(() {
+              //       if (min == 0 && hour != 0) {
+              //         min = 60;
+              //       } else if (hour == 0) {
+              //         min == 0;
+              //       } else {
+              //         min--;
+              //       }
+              //     });
+              //   });
+              // }
+              // if (hour != 0) {
+              //   Timer.periodic(Duration(hours: 1), (timer) {
+              //     setState(() {
+              //       if (hour == 0) {
+              //         hour = 0;
+              //       } else {
+              //         hour--;
+              //       }
+              //     });
+              //   });
+              // }

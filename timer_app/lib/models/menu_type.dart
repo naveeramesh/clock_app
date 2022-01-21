@@ -1,10 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:timer_app/models/alarm.dart';
-
-import '../main.dart';
-
 class MenuType extends ChangeNotifier {
   String? title;
   Icon? icon;

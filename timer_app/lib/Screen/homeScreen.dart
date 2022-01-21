@@ -45,131 +45,135 @@ class _HomeScreenState extends State<HomeScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showModalBottomSheet(
+            isScrollControlled: true,
             context: context,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
             ),
             builder: (context) {
-              return Container(
-                height: MediaQuery.of(context).size.height / 3,
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 20.0),
-                      child: GestureDetector(
-                        onTap: () async {
-                          TimeOfDay? newTime = await showTimePicker(
-                            context: context,
-                            initialTime: TimeOfDay.now(),
-                          );
-                          if (newTime != null) {
-                            var now = DateTime.now();
-                            var newdateTime = DateTime(
-                              now.year,
-                              now.month,
-                              now.day,
-                              newTime.hour,
-                              newTime.minute,
+              return Padding(
+                padding: MediaQuery.of(context).viewInsets,
+                child: Container(
+                  height: MediaQuery.of(context).size.height / 3,
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20.0),
+                        child: GestureDetector(
+                          onTap: () async {
+                            TimeOfDay? newTime = await showTimePicker(
+                              context: context,
+                              initialTime: TimeOfDay.now(),
                             );
-                            setState(() {
-                              currenttime = newdateTime.toString();
-                            });
-                          }
+                            if (newTime != null) {
+                              var now = DateTime.now();
+                              var newdateTime = DateTime(
+                                now.year,
+                                now.month,
+                                now.day,
+                                newTime.hour,
+                                newTime.minute,
+                              );
+                              setState(() {
+                                currenttime = newdateTime.toString();
+                              });
+                            }
+                          },
+                          child: Container(
+                              height: 60,
+                              child: Center(
+                                  child: Text(
+                                currenttime,
+                                style: GoogleFonts.nunitoSans(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 25),
+                              ))),
+                        ),
+                      ),
+                      Container(
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 30.0, right: 30),
+                          child: TextField(
+                            controller: titlecontroller,
+                            decoration: InputDecoration(
+                              enabledBorder: UnderlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Colors.transparent)),
+                              hintText: "Title",
+                              hintStyle: GoogleFonts.nunitoSans(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.normal,
+                                  fontSize: 18),
+                            ),
+                            style: GoogleFonts.nunitoSans(
+                                color: Colors.black,
+                                fontWeight: FontWeight.normal,
+                                fontSize: 18),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 30.0, right: 30),
+                          child: TextField(
+                            controller: descontroller,
+                            decoration: InputDecoration(
+                              enabledBorder: UnderlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Colors.transparent)),
+                              hintText: "Description",
+                              hintStyle: GoogleFonts.nunitoSans(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.normal,
+                                  fontSize: 18),
+                            ),
+                            style: GoogleFonts.nunitoSans(
+                                color: Colors.black,
+                                fontWeight: FontWeight.normal,
+                                fontSize: 18),
+                          ),
+                        ),
+                      ),
+                      Spacer(),
+                      GestureDetector(
+                        onTap: () async {
+                          var respectsQuery =
+                              FirebaseFirestore.instance.collection('Alarms');
+                          var querySnapshot = await respectsQuery.get();
+                          var totalEquals = querySnapshot.docs.length;
+
+                          var alarm = Alarm(
+                              id: totalEquals++,
+                              isactive: 1,
+                              title: titlecontroller.text.toString(),
+                              description: descontroller.text.toString(),
+                              datatime: DateTime.parse(currenttime));
+                          firebase_app.adddata(alarm);
                         },
                         child: Container(
-                            height: 60,
-                            child: Center(
-                                child: Text(
-                              currenttime,
+                          height: 50,
+                          width: 100,
+                          decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                  colors: [Colors.pink, Colors.purple]),
+                              borderRadius: BorderRadius.circular(10)),
+                          child: Center(
+                            child: Text(
+                              "Set Alarm",
                               style: GoogleFonts.nunitoSans(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 25),
-                            ))),
-                      ),
-                    ),
-                    Container(
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 30.0, right: 30),
-                        child: TextField(
-                          controller: titlecontroller,
-                          decoration: InputDecoration(
-                            enabledBorder: UnderlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.transparent)),
-                            hintText: "Title",
-                            hintStyle: GoogleFonts.nunitoSans(
-                                color: Colors.black,
+                                color: Colors.white,
                                 fontWeight: FontWeight.normal,
-                                fontSize: 18),
-                          ),
-                          style: GoogleFonts.nunitoSans(
-                              color: Colors.black,
-                              fontWeight: FontWeight.normal,
-                              fontSize: 18),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 30.0, right: 30),
-                        child: TextField(
-                          controller: descontroller,
-                          decoration: InputDecoration(
-                            enabledBorder: UnderlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.transparent)),
-                            hintText: "Description",
-                            hintStyle: GoogleFonts.nunitoSans(
-                                color: Colors.black,
-                                fontWeight: FontWeight.normal,
-                                fontSize: 18),
-                          ),
-                          style: GoogleFonts.nunitoSans(
-                              color: Colors.black,
-                              fontWeight: FontWeight.normal,
-                              fontSize: 18),
-                        ),
-                      ),
-                    ),
-                    Spacer(),
-                    GestureDetector(
-                      onTap: () async {
-                        var respectsQuery =
-                            FirebaseFirestore.instance.collection('Alarms');
-                        var querySnapshot = await respectsQuery.get();
-                        var totalEquals = querySnapshot.docs.length;
-
-                        var alarm = Alarm(
-                            id: totalEquals++,
-                            isactive: 1,
-                            title: titlecontroller.text.toString(),
-                            description: descontroller.text.toString(),
-                            datatime: DateTime.parse(currenttime));
-                        firebase_app.adddata(alarm);
-                      },
-                      child: Container(
-                        height: 50,
-                        width: 100,
-                        decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                                colors: [Colors.pink, Colors.purple]),
-                            borderRadius: BorderRadius.circular(10)),
-                        child: Center(
-                          child: Text(
-                            "Set Alarm",
-                            style: GoogleFonts.nunitoSans(
-                              color: Colors.white,
-                              fontWeight: FontWeight.normal,
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                  ],
+                      SizedBox(
+                        height: 20,
+                      ),
+                    ],
+                  ),
                 ),
               );
             },
@@ -203,20 +207,29 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Container(
                 color: Colors.transparent,
                 alignment: Alignment.center,
-                child: CLock()),
-          ),
-          Text(
-            date,
-            style: GoogleFonts.nunitoSans(
-                color: Colors.white, fontWeight: FontWeight.bold, fontSize: 25),
-          ),
-          Text(
-            day,
-            style: GoogleFonts.nunitoSans(
-                color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 15),
-          ),
-          SizedBox(
-            height: 20,
+                child: Consumer<MenuType>(
+                    builder: (context, value, child) => value.title == "Alarm"
+                        ? Column(
+                            children: [
+                              CLock(),
+                              SizedBox(height: 20),
+                              Text(
+                                date,
+                                style: GoogleFonts.nunitoSans(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 25),
+                              ),
+                              Text(
+                                day,
+                                style: GoogleFonts.nunitoSans(
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15),
+                              ),
+                            ],
+                          )
+                        : SizedBox())),
           ),
           Consumer<MenuType>(
             builder: (context, value, child) => value.title == "Alarm"
@@ -343,17 +356,25 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget buildTimer() {
     return Column(children: [
-      Container(
-          height: 60,
-          child: Consumer<Countdown>(
-            builder: (context, countdown, child) => Text(
-              countdown.seconds != 0 ? "${countdown.seconds}" : "Completed!!",
-              style: GoogleFonts.nunitoSans(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 30),
-            ),
-          )),
+      CircleAvatar(
+        radius: 115,
+        backgroundColor: Colors.green,
+        child: CircleAvatar(
+            backgroundColor: Colors.black,
+            radius: 110,
+            child: Consumer<Countdown>(
+              builder: (context, countdown, child) => Text(
+                countdown.seconds != 0 ? "${countdown.seconds}" : "Completed!!",
+                style: GoogleFonts.nunitoSans(
+                    color: Colors.white,
+                    fontWeight: FontWeight.normal,
+                    fontSize: 30),
+              ),
+            )),
+      ),
+      SizedBox(
+        height: 30,
+      ),
       GestureDetector(
         onTap: () {
           final countdown = Provider.of<Countdown>(context, listen: false);

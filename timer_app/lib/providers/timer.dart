@@ -73,13 +73,12 @@ class StopWatch with ChangeNotifier {
 
       notifyListeners();
     });
-
-    
   }
+
   void reset() {
-      _seconds = 0;
-      _hour = 0;
-      _minute = 0;
-      notifyListeners();
-    }
+    _seconds = 0;
+    _hour = 0;
+    _minute = 0;
+    notifyListeners();
+  }
 }

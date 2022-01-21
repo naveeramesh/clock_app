@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:numberpicker/numberpicker.dart';
 import 'package:provider/provider.dart';
 import 'package:timer_app/Screen/clock.dart';
 import 'package:timer_app/models/alarm.dart';
@@ -29,10 +30,12 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     Timer.periodic(Duration(minutes: 1), (timer) {
-      setState(() {
-        date = DateFormat('hh:mm a').format(DateTime.now()).toString();
-        currenttime;
-      });
+      if (mounted) {
+        setState(() {
+          date = DateFormat('hh:mm a').format(DateTime.now()).toString();
+          currenttime;
+        });
+      }
     });
 
     super.initState();
@@ -74,9 +77,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                 newTime.hour,
                                 newTime.minute,
                               );
-                              setState(() {
-                                currenttime = newdateTime.toString();
-                              });
+                              if (mounted) {
+                                setState(() {
+                                  currenttime = newdateTime.toString();
+                                });
+                              }
                             }
                           },
                           child: Container(
@@ -339,7 +344,6 @@ class _HomeScreenState extends State<HomeScreen> {
                             })))
                 : SizedBox(),
           ),
-          SizedBox(height: 50),
           Consumer<MenuType>(
               builder: (context, value, child) => value.title == "Timer"
                   ? Expanded(child: Container(child: buildTimer()))
@@ -356,29 +360,106 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget buildTimer() {
     return Column(children: [
-      CircleAvatar(
-        radius: 115,
-        backgroundColor: Colors.green,
-        child: CircleAvatar(
-            backgroundColor: Colors.black,
-            radius: 110,
-            child: Consumer<Countdown>(
-              builder: (context, countdown, child) => Text(
-                countdown.seconds != 0 ? "${countdown.seconds}" : "Completed!!",
-                style: GoogleFonts.nunitoSans(
-                    color: Colors.white,
-                    fontWeight: FontWeight.normal,
-                    fontSize: 30),
+      Expanded(
+          child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.all(20),
+                child: Text(
+                  "HH",
+                  style: GoogleFonts.nunitoSans(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20),
+                ),
               ),
-            )),
-      ),
-      SizedBox(
-        height: 30,
-      ),
+              Consumer<Countdown>(
+                builder: (context, value, child) => NumberPicker(
+                    textStyle: GoogleFonts.nunitoSans(color: Colors.white),
+                    selectedTextStyle: GoogleFonts.nunitoSans(
+                        color: Colors.red,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20),
+                    value: value.hour,
+                    minValue: 0,
+                    maxValue: 23,
+                    onChanged: (val) {
+                      value.sethour(val);
+                      value.startcountdown();
+                    }),
+              )
+            ],
+          ),
+          Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.all(20),
+                child: Text(
+                  "MM",
+                  style: GoogleFonts.nunitoSans(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20),
+                ),
+              ),
+              Consumer<Countdown>(
+                builder: (context, value, child) => NumberPicker(
+                    textStyle: GoogleFonts.nunitoSans(color: Colors.white),
+                    selectedTextStyle: GoogleFonts.nunitoSans(
+                        color: Colors.red,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20),
+                    value: value.min,
+                    minValue: 0,
+                    maxValue: 60,
+                    onChanged: (val) {
+                      value.setmin(val);
+                      value.startcountdown();
+                    }),
+              )
+            ],
+          ),
+          Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.all(20),
+                child: Text(
+                  "SS",
+                  style: GoogleFonts.nunitoSans(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20),
+                ),
+              ),
+              Consumer<Countdown>(
+                builder: (context, value, child) => NumberPicker(
+                    textStyle: GoogleFonts.nunitoSans(color: Colors.white),
+                    selectedTextStyle: GoogleFonts.nunitoSans(
+                        color: Colors.red,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20),
+                    value: value.seconds,
+                    minValue: 0,
+                    maxValue: 60,
+                    onChanged: (val) {
+                      value.setsec(val);
+                      value.startcountdown();
+                    }),
+              )
+            ],
+          )
+        ],
+      )),
+      Consumer<Countdown>(
+          builder: (context, value, child) => Text(value.totalsec.toString(),
+              style: GoogleFonts.nunitoSans(color: Colors.white))),
+      SizedBox(height: 40),
       GestureDetector(
         onTap: () {
           final countdown = Provider.of<Countdown>(context, listen: false);
-          countdown.startcountdown();
         },
         child: Container(
           height: 40,

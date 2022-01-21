@@ -15,7 +15,9 @@ class _CLockState extends State<CLock> {
   @override
   void initState() {
     Timer.periodic(Duration(seconds: 1), (timer) {
-      setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     });
 
     super.initState();

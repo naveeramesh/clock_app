@@ -40,13 +40,10 @@ Mobile application to check the time, set alarm, timer and stop watch with backe
 2. Fork the repository 
 3. Clone the Repo by going to your local Git Client and pushing in the command: 
 
-
 ```sh
-https://github.com/naveeramesh/Foodo.git
+https://github.com/naveeramesh/clock_app.git
 ```
-## How to run 🏃‍♀️🏃‍♀️
-
-
+## Commands to run 🏃‍♀️🏃‍♀️
 
 ```sh
 flutter pub get

@@ -34,4 +34,23 @@ Mobile application to check the time, set alarm, timer and stop watch with backe
      <img src="https://user-images.githubusercontent.com/54928117/150625141-b01f8837-130c-48a7-991a-b8f68a5aad06.jpg"width=200 height=400  > </>
 </p>
 
+## Local Installation 🚩
+
+1. Drop a ⭐ on the Github Repository. 
+2. Fork the repository 
+3. Clone the Repo by going to your local Git Client and pushing in the command: 
+
+
+```sh
+https://github.com/naveeramesh/Foodo.git
+```
+## How to run 🏃‍♀️🏃‍♀️
+
+
+
+```sh
+flutter pub get
+flutter run
+``` 
+
 

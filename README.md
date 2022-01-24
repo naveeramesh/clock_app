@@ -25,6 +25,7 @@ Mobile application to check the time, set alarm, timer and stop watch with backe
      4. Continue
 - Once you set the alarm at the particular time you get the alarm notification.
 - You can also cancel the alarm which you have setted earlier.
+- Statemanagement - Provider
 
 ## Screenshots
 <p align ="center">

@@ -39,7 +39,6 @@ dependencies:
   lottie: ^1.2.1
   numberpicker: ^2.1.1
   provider: ^6.0.2
-  sqflite: ^2.0.2
   time_picker: ^0.0.2
 
 dev_dependencies:
